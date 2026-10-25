@@ -1,25 +1,5 @@
 {
   "nodes": {
-    "brew-nix": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1792944696,
-        "narHash": "sha256-Ni89L7PQOFhls6VH/emQDTM4AH6G/iKrcCoDTW4jYL0=",
-        "owner": "glassesneo",
-        "repo": "brew-nix",
-        "rev": "a6d6651efa10597ec4526fbbb7c402bd9a7f6fc1",
-        "type": "github"
-      },
-      "original": {
-        "owner": "glassesneo",
-        "repo": "brew-nix",
-        "type": "github"
-      }
-    },
     "brew-taps-api": {
       "flake": false,
       "locked": {
@@ -31,6 +11,26 @@
         "type": "path"
       },
       "parent": []
+    },
+    "cask2nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792946347,
+        "narHash": "sha256-3/DagdVSdjQG4K4Y6SGsGiC2nrWk3C/AeEOaqCAD7fk=",
+        "owner": "glassesneo",
+        "repo": "cask2nix",
+        "rev": "ae5d0e6c4291b21d81284ce95fd4e6347bcdad84",
+        "type": "github"
+      },
+      "original": {
+        "owner": "glassesneo",
+        "repo": "cask2nix",
+        "type": "github"
+      }
     },
     "nixpkgs": {
       "locked": {
@@ -50,8 +50,8 @@
     },
     "root": {
       "inputs": {
-        "brew-nix": "brew-nix",
         "brew-taps-api": "brew-taps-api",
+        "cask2nix": "cask2nix",
         "nixpkgs": "nixpkgs"
       }
     }

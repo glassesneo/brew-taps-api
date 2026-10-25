@@ -1,4 +1,4 @@
-# Regenerates taps/ from taps.txt, checks that brew-nix can evaluate it, and
+# Regenerates taps/ from taps.txt, checks that cask2nix can evaluate it, and
 # commits it when it changed.
 name: update
 
@@ -38,7 +38,7 @@ jobs:
           nix run .#gen-tap -- taps.txt taps
           git add -A -- taps
 
-      - name: Evaluate taps with brew-nix
+      - name: Evaluate taps with cask2nix
         run: nix flake check ./tests --print-build-logs
 
       - name: Commit changes

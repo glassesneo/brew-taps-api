@@ -1,10 +1,10 @@
-# Evaluates the generated taps with mkTaps from glassesneo/brew-nix (a fork of
-# BatteredBunny/brew-nix), so CI only commits data it can read. Run from the repository root: `nix flake check ./tests`.
+# Evaluates the generated taps with cask2nix's mkTaps, so CI only commits data
+# cask2nix can read. Run from the repository root: `nix flake check ./tests`.
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    brew-nix = {
-      url = "github:glassesneo/brew-nix";
+    cask2nix = {
+      url = "github:glassesneo/cask2nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     brew-taps-api = {
@@ -16,7 +16,7 @@
   outputs =
     {
       nixpkgs,
-      brew-nix,
+      cask2nix,
       brew-taps-api,
       ...
     }:
@@ -30,7 +30,7 @@
       checks = forAllSystems (pkgs: {
         eval-taps =
           let
-            brewTaps = brew-nix.lib.mkTaps {
+            brewTaps = cask2nix.lib.mkTaps {
               inherit pkgs;
               source = "${brew-taps-api}/taps";
             };
