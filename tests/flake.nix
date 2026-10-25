@@ -1,5 +1,5 @@
-# Evaluates the generated taps with brew-nix's mkTaps, so CI only commits data
-# brew-nix can read. Run from the repository root: `nix flake check ./tests`.
+# Evaluates the generated taps with mkTaps from glassesneo/brew-nix (a fork of
+# BatteredBunny/brew-nix), so CI only commits data it can read. Run from the repository root: `nix flake check ./tests`.
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
