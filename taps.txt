@@ -1,2 +1,3 @@
-# Homebrew taps to generate, one per line.
+# Homebrew taps to generate, one per line, in alphabetical order.
+nikitabobko/tap
 phibrowser/tap
