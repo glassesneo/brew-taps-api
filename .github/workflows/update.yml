@@ -1,0 +1,52 @@
+# Regenerates taps/ from taps.txt, checks that brew-nix can evaluate it, and
+# commits it when it changed.
+name: update
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  push:
+    branches: [main]
+    paths: [taps.txt, gen-tap.sh, flake.nix, flake.lock]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: true
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+
+      # The tests flake reads this repository through Git, so the new data has
+      # to be staged before it is evaluated.
+      - name: Generate taps
+        run: |
+          nix run .#gen-tap -- taps.txt taps
+          git add -A -- taps
+
+      - name: Evaluate taps with brew-nix
+        run: nix flake check ./tests --print-build-logs
+
+      - name: Commit changes
+        run: |
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" \
+            -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "Update taps"
+          git push
