@@ -19,11 +19,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792946347,
-        "narHash": "sha256-3/DagdVSdjQG4K4Y6SGsGiC2nrWk3C/AeEOaqCAD7fk=",
+        "lastModified": 1792946644,
+        "narHash": "sha256-LcZ+ETksG39hNORIZ8cxqqKd58GhiKnmG70uVs6lDUA=",
         "owner": "glassesneo",
         "repo": "cask2nix",
-        "rev": "ae5d0e6c4291b21d81284ce95fd4e6347bcdad84",
+        "rev": "74df576f04b10bed7cb90d147637bf9e31d1d239",
         "type": "github"
       },
       "original": {
