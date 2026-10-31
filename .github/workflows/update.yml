@@ -1,5 +1,6 @@
-# Regenerates taps/ from taps.txt, checks that cask2nix can evaluate it, and
-# commits it when it changed.
+# Regenerates taps/ from taps.txt and checks that cask2nix can evaluate it. On
+# main it also commits the result when it changed; on pull requests it only
+# checks.
 name: update
 
 on:
@@ -7,25 +8,29 @@ on:
     - cron: "0 0 * * *"
   push:
     branches: [main]
-    paths: [taps.txt, gen-tap.sh, flake.nix, flake.lock]
+    paths: &paths [taps.txt, gen-tap.sh, flake.nix, flake.lock, tests/**, .github/workflows/update.yml]
+  pull_request:
+    paths: *paths
   workflow_dispatch:
 
 permissions: {}
 
+# Runs on main queue so commits land in order; a newer push to a pull request
+# makes its older run pointless.
 concurrency:
-  group: update
-  cancel-in-progress: false
+  group: update-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  update:
+  check:
     runs-on: macos-latest
     timeout-minutes: 30
     permissions:
-      contents: write
+      contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          persist-credentials: true
+          persist-credentials: false
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           extra-conf: |
@@ -41,8 +46,36 @@ jobs:
       - name: Evaluate taps with cask2nix
         run: nix flake check ./tests --print-build-logs
 
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        if: github.event_name != 'pull_request'
+        with:
+          name: taps
+          path: taps
+          retention-days: 1
+
+  commit:
+    needs: check
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: true
+
+      # Replace taps/ as a whole so taps removed from the manifest disappear.
+      - name: Replace taps
+        run: rm -rf taps
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: taps
+          path: taps
+
       - name: Commit changes
         run: |
+          git add -A -- taps
           if git diff --cached --quiet; then
             exit 0
           fi
