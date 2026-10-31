@@ -23,6 +23,12 @@ for tap in "${taps[@]}"; do
   fi
 
   brew tap "$tap" >&2
+  # Newer brew refuses to load casks from third-party taps until they are
+  # trusted; listing a tap in the manifest is that opt-in. Older brew has no
+  # trust command and loads them anyway.
+  if brew trust --help >/dev/null 2>&1; then
+    brew trust "$tap" >&2
+  fi
   mapfile -t tokens < <(brew tap-info --json "$tap" | jq -r '.[0].cask_tokens[]')
 
   mkdir -p "$tmp/$tap"
