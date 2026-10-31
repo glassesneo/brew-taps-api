@@ -34,7 +34,7 @@ brewTaps.phibrowser.tap.phi
 
 ## Your own taps
 
-Fork or copy this repository and edit `taps.txt`. The [update workflow](.github/workflows/update.yml) runs daily, on pushes that change `taps.txt` or the generator, and on demand. It regenerates `taps/`, evaluates every cask with cask2nix (`nix flake check ./tests`), and commits only when that passes.
+Fork or copy this repository and edit `taps.txt`. The [update workflow](.github/workflows/update.yml) runs daily, on pushes that change `taps.txt` or the generator, and on demand. It regenerates `taps/`, evaluates every cask with cask2nix (`nix flake check ./tests`), and commits only when that passes. Pull requests that touch the same files run the same check without committing.
 
 To generate locally (requires `brew` on `PATH`):
 
